@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ActionWorkFlow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body>
+    <div class="container" id="appWindow">
+        <div class="window-controls">
+            <i class="fas fa-cog" id="settingsButton" title="Theme Settings"></i>
+            <i class="fas fa-thumbtack" id="pinButton" title="Pin Window"></i>
+            <i class="fas fa-times" id="closeButton" title="Close"></i>
+        </div>
+
+        <div class="header-actions">
+            <button class="import-btn">
+                <i class="fas fa-file-import"></i> Import
+            </button>
+            <i class="fas fa-plus-circle add-category" title="Add New Category"></i>
+        </div>
+        
+        <div class="title-container">
+            <h1 class="glow-text">ActionWorkFlow</h1>
+        </div>
+
+        <div class="categories">
+            <div class="category" data-category="git_settings">
+                <div class="category-header">
+                    <h2>Git Settings</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content">
+                    <div class="search-container">
+                        <input type="text" id="searchRepo" placeholder="Search repositories...">
+                        <input type="text" id="searchBranch" placeholder="Search branches...">
+                        <input type="text" id="searchCommit" placeholder="Search commits...">
+                    </div>
+                    <div class="git-user-settings">
+                        <button id="manageGitUsers" class="settings-btn">
+                            <i class="fas fa-users"></i> Manage Git Users
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category" data-category="jupyter">
+                <div class="category-header">
+                    <h2>Jupyter Notebook</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-info-circle info-icon" title="Requires GitHub token in .env file"></i>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content"></div>
+            </div>
+
+            <div class="category" data-category="git_search_push">
+                <div class="category-header">
+                    <h2>Git Search & Push</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content"></div>
+            </div>
+
+            <div class="category" data-category="nodejs">
+                <div class="category-header">
+                    <h2>Node.js Commands</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-plus-circle add-command" title="Add Command"></i>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content"></div>
+            </div>
+
+            <div class="category" data-category="git">
+                <div class="category-header">
+                    <h2>Git Commands</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-plus-circle add-command" title="Add Command"></i>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content"></div>
+            </div>
+
+            <div class="category" data-category="docker">
+                <div class="category-header">
+                    <h2>Docker Commands</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-plus-circle add-command" title="Add Command"></i>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content"></div>
+            </div>
+
+            <div class="category" data-category="deploy_github">
+                <div class="category-header">
+                    <h2>Deploy via GitHub</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-plus-circle add-server" title="Add New Server"></i>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content"></div>
+            </div>
+
+            <div class="category" data-category="deploy_docker">
+                <div class="category-header">
+                    <h2>Deploy via Docker</h2>
+                    <div class="category-actions">
+                        <i class="fas fa-plus-circle add-server" title="Add New Server"></i>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </div>
+                </div>
+                <div class="category-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Settings Modal -->
+    <div class="modal" id="themeModal">
+        <h2>Theme Settings</h2>
+        <div class="theme-options">
+            <h3>Dark Mode</h3>
+            <div class="color-options">
+                <button class="theme-btn" data-theme="cyan-dark">Cyan</button>
+                <button class="theme-btn" data-theme="white-dark">White</button>
+                <button class="theme-btn" data-theme="green-dark">Green</button>
+                <button class="theme-btn" data-theme="purple-dark">Purple</button>
+            </div>
+            <h3>Light Mode</h3>
+            <div class="color-options">
+                <button class="theme-btn" data-theme="gray-light">Gray</button>
+                <button class="theme-btn" data-theme="yellow-light">Yellow</button>
+            </div>
+        </div>
+        <button id="closeThemeModal" class="secondary">Close</button>
+    </div>
+
+    <!-- Git Users Modal -->
+    <div class="modal" id="gitUsersModal">
+        <h2>Manage Git Users</h2>
+        <div class="git-users-list"></div>
+        <div class="form-group">
+            <label for="gitUsername">Username:</label>
+            <input type="text" id="gitUsername" required>
+        </div>
+        <div class="form-group">
+            <label for="gitEmail">Email:</label>
+            <input type="email" id="gitEmail" required>
+        </div>
+        <div class="dialog-buttons">
+            <button type="button" class="primary" id="saveGitUser">Save User</button>
+            <button type="button" class="secondary" id="closeGitUsers">Close</button>
+        </div>
+    </div>
+
+    <!-- Push Selection Modal -->
+    <div class="modal" id="pushSelectionModal">
+        <h2>Select Push Details</h2>
+        <div class="form-group">
+            <label for="selectRepo">Repository:</label>
+            <select id="selectRepo" required></select>
+        </div>
+        <div class="form-group">
+            <label for="selectBranch">Branch:</label>
+            <select id="selectBranch" required></select>
+        </div>
+        <div class="form-group">
+            <label for="commitMessage">Commit Message:</label>
+            <input type="text" id="commitMessage" required>
+        </div>
+        <div class="dialog-buttons">
+            <button type="button" class="primary" id="executePush">Push</button>
+            <button type="button" class="secondary" id="cancelPush">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Existing modals -->
+    <div class="modal-overlay"></div>
+    <div class="modal" id="paramModal">
+        <h2>Enter Parameters</h2>
+        <div id="paramFields"></div>
+        <button id="executeCommand">Execute</button>
+    </div>
+
+    <div class="modal" id="addCommandModal">
+        <h2>Add New Command</h2>
+        <div class="form-group">
+            <label for="cmdName">Name:</label>
+            <input type="text" id="cmdName" required>
+        </div>
+        <div class="form-group">
+            <label for="cmdDescription">Description:</label>
+            <input type="text" id="cmdDescription" required>
+        </div>
+        <div class="form-group">
+            <label for="cmdCommand">Command:</label>
+            <input type="text" id="cmdCommand" required>
+        </div>
+        <button id="saveCommand">Save Command</button>
+    </div>
+
+    <div class="modal" id="importModal">
+        <h2>Import Commands</h2>
+        <div class="form-group">
+            <label for="importFile">Select HTML File:</label>
+            <input type="file" id="importFile" accept=".html">
+        </div>
+        <button id="importCommands">Import</button>
+    </div>
+
+    <!-- Add Server Modal -->
+    <div class="modal" id="addServerModal">
+        <h2>Add New Server</h2>
+        <div class="form-group">
+            <label for="serverType">Server Type:</label>
+            <select id="serverType" required>
+                <option value="cloudflare">Cloudflare Pages</option>
+                <option value="jupyter">Jupyter Notebook</option>
+                <option value="custom">Custom VPS</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="serverName">Server Name:</label>
+            <input type="text" id="serverName" required>
+        </div>
+        <div class="form-group">
+            <label for="serverUrl">Server URL:</label>
+            <input type="text" id="serverUrl" required>
+        </div>
+        <div class="form-group credentials-group">
+            <!-- Dynamic credentials fields will be added here -->
+        </div>
+        <div class="dialog-buttons">
+            <button type="button" class="primary" id="saveServer">Save Server</button>
+            <button type="button" class="secondary" id="cancelServer">Cancel</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 
